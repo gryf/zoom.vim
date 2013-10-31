@@ -1,8 +1,28 @@
 This is fork of a mirror of http://www.vim.org/scripts/script.php?script_id=2321
 
 Control Vim editor font size with keyboard or mouse.
+
+==============================================================================
+Remarks.
+
 This plugin is for GUI only.
 
+Currently, this plugin olny works for fonts, that are defined as a typeface 
+name AND the size. For example: >
+
+    set guifont=DejaVu\ Sans\ Mono\ 12
+    set guifont=Consolas:h10:cEASTEUROPE
+    set guifont=Monaco:h11
+
+Putting only name will not work at all, since guessing default font size for 
+all of the operating system can be difficult.
+
+For Linux, *BSD or other unix-like system it will be assumed, that graphical 
+environment is an X11 system. Wayland, or other non-X solutions will be added 
+as they emerged, however wayland-x11 driver may work OOTB.
+
+==============================================================================
+Usage:
 
 Normal Mode:
     Keypad +              ... incerase font size
@@ -19,11 +39,14 @@ Command-line Mode:
     :ZoomReset            ... reset font size to initial state
 
 ==============================================================================
+Installing
 
 1. Copy the zoom.vim script to
    $HOME/vimfiles/plugin or $HOME/.vim/plugin directory.
    Refer to ':help add-plugin', ':help add-global-plugin' and
    ':help runtimepath' for more details about Vim plugins.
-   Or just use pathogen (https://github.com/tpope/vim-pathogen)
+
+   Or just use pathogen (https://github.com/tpope/vim-pathogen) or simmilar 
+   solution
 
 2. Restart Vim.

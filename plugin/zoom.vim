@@ -1,5 +1,5 @@
-"The guard. Zoom will only work in graphical Vim. For terminal version try to
-"find out how to increase/decrease font size in your terminal emulator.
+" Zoom will only work in graphical Vim. For terminal version try to find out 
+" how to increase/decrease font size in your terminal emulator.
 if !has("gui")
   finish
 endif
@@ -30,14 +30,19 @@ nmap <C-ScrollWheelDown> :ZoomOut<CR>
 
 " guifont size + 1
 function! s:ZoomIn()
-  " Let's check, what system we are dealing with
-  if has("win32")
+  " Let's check, what system we are dealing with.
+  " TODO: This will work only with clearly defined font names AND sizes. 
+  " Putting only name will not work at all, since guessing default font size 
+  " can be difficult.
+  if has("win32") || has("mac")
     let l:fsize = substitute(&guifont, '^.*:h\([^:]*\).*$', '\1', '')
     let l:fsize += 1
     let l:guifont = substitute(&guifont, ':h\([^:]*\)', ':h' . l:fsize, '')
     let &guifont = l:guifont
-  elseif has('unix')
-    " TODO: Might not work on OS X
+  " That will assume, that under Linux or *BSD systems graphical environment
+  " is an X11 system. Wayland, or other non-X solutions will be added as they 
+  " emerged, however wayland-x11 driver may work OOTB.
+  elseif has('unix') && has("x11")
     let l:font = split(&guifont)
     let l:font[-1] = l:font[-1] + 1
     let &guifont = join(l:font, " ")
@@ -47,12 +52,12 @@ endfunction
 " guifont size - 1
 function! s:ZoomOut()
   " Same as above
-  if has("win32")
+  if has("win32") || has("mac")
     let l:fsize = substitute(&guifont, '^.*:h\([^:]*\).*$', '\1', '')
     let l:fsize -= 1
     let l:guifont = substitute(&guifont, ':h\([^:]*\)', ':h' . l:fsize, '')
     let &guifont = l:guifont
-  elseif has('unix')
+  elseif has('unix') && has("x11")
     let l:font = split(&guifont)
     let l:font[-1] = l:font[-1] - 1
     let &guifont = join(l:font, " ")
@@ -72,15 +77,35 @@ zoom.vim : control gui font size with "+" or "-" keypad keys.
 ------------------------------------------------------------------------------
 $VIMRUNTIMEPATH/plugin/zoom.vim
 ==============================================================================
-author  : OMI TAKU
+author  : OMI TAKU, gryf
 url     : http://nanasi.jp/
 email   : mail@nanasi.jp
-version : 2008/07/18 10:00:00
+version : 2008/07/18 10:00:00, 2013-10-31 18:53:01
 ==============================================================================
 
 Control Vim editor font size with keyboard or mouse.
+
+==============================================================================
+Remarks.
+
 This plugin is for GUI only.
 
+Currently, this plugin olny works for fonts, that are defined as a typeface 
+name AND the size. For example: >
+
+    set guifont=DejaVu\ Sans\ Mono\ 12
+    set guifont=Consolas:h10:cEASTEUROPE
+    set guifont=Monaco:h11
+
+Putting only name will not work at all, since guessing default font size for 
+all of the operating system can be difficult.
+
+For Linux, *BSD or other unix-like system it will be assumed, that graphical 
+environment is an X11 system. Wayland, or other non-X solutions will be added 
+as they emerged, however wayland-x11 driver may work OOTB.
+
+==============================================================================
+Usage:
 
 Normal Mode:
     Keypad +              ... incerase font size
@@ -97,12 +122,15 @@ Command-line Mode:
     :ZoomReset            ... reset font size to initial state
 
 ==============================================================================
+Installing
 
 1. Copy the zoom.vim script to
    $HOME/vimfiles/plugin or $HOME/.vim/plugin directory.
    Refer to ':help add-plugin', ':help add-global-plugin' and
    ':help runtimepath' for more details about Vim plugins.
-   Or just use pathogen (https://github.com/tpope/vim-pathogen)
+
+   Or just use pathogen (https://github.com/tpope/vim-pathogen) or simmilar 
+   solution
 
 2. Restart Vim.
 
